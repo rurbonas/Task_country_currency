@@ -53,16 +53,76 @@ class ExchangeRates:
             return "File not found"
         except KeyError as err:
             return "Bad country code"
+
+    def list(self, xfile):
+        try:
+            with open(xfile, "r") as content: # open file into contents variable
+                exchange = json.load(content)  # JSON object as dictionary
+                rates = exchange["rates"]
+                for key in rates.keys():
+                    print(key)
+                return
+        except FileNotFoundError as err:
+            return "File not found"
 ```
 Main program code
 ```python
 from app.exchange_rate_paser import ExchangeRates
 
 parse = ExchangeRates()
-
-
-country = input("What country code would you like to see >> ").upper()
 xfile = "exchange_rates.json" # input("Name of the file you would like to open? >> ")
 
-print(parse.parse(xfile, country))
+print("Choose to continue: \n"
+          "1. 'CONVERT' to see the currency against the EUR \n"
+          "2. 'OTHER' to choose other currencies \n"
+          "3. 'LIST' to see country codes \n"
+          "4. 'HELP' to see the menu \n"
+          "5. 'EXIT' to quit")
+
+while True:
+    choice = str(input("What would you like to do >> ").upper())
+    if choice == 'CONVERT':
+        country = input("What country code would you like to see >> ").upper()
+        first_currency = parse.parse(xfile, country)
+        print(f"The EUR is {first_currency} {country}")
+        continue
+    elif choice == 'OTHER':
+        country = x1 = input("Choose a starting currency >> ").upper()
+        first_currency = parse.parse(xfile, country)
+        country = input("Choose your second currency >> ").upper()
+        second_currency = parse.parse(xfile, country)
+        final_currency = second_currency / first_currency
+        print(f"1 {x1} is {final_currency} {country}")
+        continue
+    elif choice == 'LIST':
+        print(parse.list(xfile))
+        continue
+    elif choice == 'HELP':
+        print("Choose to continue: \n"
+              "1. 'CONVERT' to see the currency against the EUR \n"
+              "2. 'OTHER' to choose other currencies \n"
+              "3. 'LIST' to see country codes \n"
+              "4. 'HELP' to see the menu \n"
+              "5. 'EXIT' to quit")
+        continue
+    elif choice == 'EXIT':
+        break
+    else:
+        print("Invalid input")
+```
+### Example
+```python
+Choose to continue: 
+1. 'CONVERT' to see the currency against the EUR 
+2. 'OTHER' to choose other currencies 
+3. 'LIST' to see country codes 
+4. 'HELP' to see the menu 
+5. 'EXIT' to quit
+What would you like to do >> other
+Choose a starting currency >> gbp
+Choose your second currency >> usd
+1 GBP is 1.304284514141697 USD
+What would you like to do >> eixt
+Invalid input
+What would you like to do >> exit
 ```
